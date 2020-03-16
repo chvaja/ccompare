@@ -20,6 +20,12 @@ module.exports = function (engine) {
       if (!params.from || !params.to) {
         return {}
       }
+      if (query.dir === 'sell') {
+        const pcopy = JSON.parse(JSON.stringify(params))
+        params.to = pcopy.from
+        params.from = pcopy.to
+      }
+      console.log(params)
       const out = await engine.fetch({ url: apiUrl + '?' + engine.qs.stringify(params) })
       if (!out.data || !out.data.status) {
         return {

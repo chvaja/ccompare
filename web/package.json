@@ -6,6 +6,11 @@
   "scripts": {
     "watch": "parcel watch --no-hmr --no-source-maps src/index.html"
   },
+  "standard": {
+    "ignore": [
+      "/dist"
+    ]
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {
