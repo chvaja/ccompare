@@ -4,6 +4,17 @@ const numeral = require('numeral')
 
 const sellers = require('./sellers')
 
+const flags = {
+  'no-kyc': { ico: 'fas fa-user-secret', name: 'Možný nákup bez KYC' },
+  cash: { ico: 'fas fa-money-bill-wave', name: 'Hotovost' },
+  exchange: { ico: 'fas fa-analytics', name: 'Burza', color: 'green', fixed: true },
+  verified: { ico: 'fas fa-badge-check', name: 'Ověřený prodejce', color: 'green', fixed: true },
+  cards: { ico: 'fas fa-credit-card', name: 'Podpora platebních karet' },
+  wire: { ico: 'fas fa-university', name: 'Platby na bankovní účet' },
+  custody: { ico: 'fas fa-wallet', name: 'Integrovaná peněženka (custody) - NEBEZPEČNÉ' },
+  direct: { ico: 'fas fa-forward', name: 'Přímé zaslání do peněženky' }
+}
+
 const symbols = {
   czk: { type: 'fiat', name: 'CZK' },
   eur: { type: 'fiat', name: 'EUR' },
@@ -113,7 +124,7 @@ const Table = {
     }
     return m('table.table.is-fullwidth.cc-table', { style: 'margin-bottom: 1em; margin-top: 0.5em;' }, [
       m('thead', [
-        m('th', ''),
+        m('th', { colspan: 2 }, ''),
         m('th', { align: 'center' }, 'Kurz'),
         m('th', { align: 'center' }, 'Rozdíl'),
         m('th', { align: 'right' }, 'Cena')
@@ -130,7 +141,7 @@ const Table = {
         if (!r.price) {
           return m('tr.is-inactive', [
             m('td', sellerTd),
-            m('td', { colspan: 3, align: 'center' }, `-- ${r.error ? r.error : 'žádné data'} --`)
+            m('td', { colspan: 4, align: 'center' }, `-- ${r.error ? r.error : 'žádné data'} --`)
           ])
         }
         const showPrice = () => {
@@ -141,6 +152,10 @@ const Table = {
 
         return m('tr', { class: `${r.oracle ? 'is-oracle' : ''}` }, [
           m('td', sellerTd),
+          m('td', { align: 'left' }, (!seller || !seller.flags) ? '' : seller.flags.map(sf => {
+            const fl = flags[sf]
+            return m('i.flag', { class: fl.ico + (fl.fixed ? ' ' + 'fixed' : ''), style: `color: ${fl.color ? fl.color : 'gray'};`, title: fl.name, alt: fl.name })
+          })),
           m('td', { align: 'center', style: 'font-size: 0.8em; line-height: 1.2em;' }, r.price ? m.trust(numeral(Number(r.price) / Number(result.value)).format('0,0.00') + ` ${symbols[result.source].name}` + `<br>$${numeral(Number(r.alt) / Number(result.value)).format('0,0.00')}`) : ''),
           m('td', { align: 'center', class: cl }, r.price ? (offset ? `${offset > 0 ? '+' : ''}${Math.round(offset * 100) / 100}%` : (r.oracle ? '0%' : 'nejlepší nabídka')) : ''),
           m('td', { align: 'right', style: `${r.orig ? 'line-height: 1.1em; padding-top: 0.4em; padding-bottom: 0.3em;' : ''}` }, r.price ? showPrice() : '')

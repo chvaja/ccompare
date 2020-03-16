@@ -41,6 +41,9 @@ module.exports = function (engine) {
       const rates = rr.data.data.attributes
       for (const r of Object.keys(rates)) {
         const channel = r.replace(/^channel/, '').toLowerCase()
+        if (channel === 'cash') {
+          continue
+        }
         const price = Number(rates[r][dir]) * Number(query.value)
         const obj = { seller: `bitstock_${channel}`, price: String(price) }
         if (limits[channel]) {

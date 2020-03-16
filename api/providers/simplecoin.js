@@ -25,7 +25,6 @@ module.exports = function (engine) {
         params.to = pcopy.from
         params.from = pcopy.to
       }
-      console.log(params)
       const out = await engine.fetch({ url: apiUrl + '?' + engine.qs.stringify(params) })
       if (!out.data || !out.data.status) {
         return {

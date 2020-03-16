@@ -6,7 +6,7 @@
 }
 .cc-table tr:not(.is-oracle):not(.is-inactive):hover td {
   /*background-color: #fffed4;*/
-  background-color: #e8ffee;
+  background-color: #fff6d1;
 }
 .loading {
   display: inline-block;
@@ -21,7 +21,10 @@
   background-size: 20px 20px;
   vertical-align: -0.25em;
   margin-right: 0.5em;
+  opacity: 0.9;
 }
+tr:hover .seller-ico { opacity: 1; }
+
 .seller-coinmate { background-image: url(/img/sellers/coinmate.ico); }
 .seller-anycoin { background-image: url(/img/sellers/anycoin.png); }
 .seller-freecoin { background-image: url(/img/sellers/freecoin.ico); }
@@ -39,3 +42,7 @@
 .is-green { color: green; }
 .is-yellow { color: orange; }
 .is-red { color: red; }
+
+.flag { margin-right: 0.7em; opacity: 0.3; }
+.flag.fixed { opacity: 1; }
+tr:hover .flag { opacity: 1; }

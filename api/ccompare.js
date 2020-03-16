@@ -183,9 +183,9 @@ class CCompare {
       out = await axios(Object.assign(opts, { timeout: 2000 }))
       this.saveCache(hash, { data: out.data })
     } catch (e) {
-      console.error(e.message)
+      console.error(opts.url, e.message)
       this.saveCache(hash, { error: e.message })
-      return { data: {} }
+      return { error: e, data: {} }
     }
     return out
   }

@@ -11,16 +11,37 @@ module.exports = function (engine) {
     xrp: 3
   }
 
+  let token = null
+
   return {
 
     async resolve (query) {
       if (query.source !== 'czk') {
         return {}
       }
+      if (token && (Number(new Date()) - Number(token.time)) > 1000 * 60 * 60) {
+        token = null
+      }
+      if (!token) {
+        const login = await engine.fetch({
+          url: 'https://www.bitbeli.cz/api/client/auth/login',
+          method: 'post',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+        token = {
+          token: login.data.token,
+          time: new Date()
+        }
+      }
+      if (!token) {
+        return {}
+      }
       const pp = await engine.fetch({
         url: 'https://www.bitbeli.cz/api/client/exchange/currency-crypto-rate-czk/buy',
         headers: {
-          authorization: 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiI3MzU1YzMwMy03NGZhLTRlNmUtYmM0OS0yMDlmNjVlMWUxMDkiLCJzdWIiOiJBbm9ueW1vdXNfQml0YmVsaV9kODUxY2NlMS0wNTJkLTQ2ZjItOWFiMS0yOTA0OTJiMGMwOTR6RWlDNkNFNjgzUW50MDJTd2VqMEZ6ZTJrd1ZlSEZibSIsImlhdCI6MTU4NDI1NzM3OCwiZXhwIjoxNTg0MjY0NTc4fQ.mgnr9zrKrrrivD4eMT5IplyqnzywAmZhrbVHMR05GTR4GhnS7d9eadGYl2SX0Zayam4XuN6MUgmNVcDveTNyLA'
+          authorization: `Bearer ${token.token}`
         }
       })
       if (!pp.data) {
