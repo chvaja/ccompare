@@ -1,7 +1,6 @@
 module.exports = function (engine) {
-
   const symbols = {
-    fiat: [ 'czk', 'eur' ]
+    fiat: ['czk', 'eur']
   }
 
   const pairs = {
@@ -19,12 +18,12 @@ module.exports = function (engine) {
   }
 
   const fees = {
-    'ETH_CZK': 0.0015,
-    'ETH_EUR': 0.0015,
-    'BTC_CZK': 0.0025,
-    'BTC_EUR': 0.0025,
-    'LTC_CZK': 0.0025,
-    'LTC_EUR': 0.0025,
+    ETH_CZK: 0.0015,
+    ETH_EUR: 0.0015,
+    BTC_CZK: 0.0025,
+    BTC_EUR: 0.0025,
+    LTC_CZK: 0.0025,
+    LTC_EUR: 0.0025
   }
 
   return {
@@ -33,7 +32,7 @@ module.exports = function (engine) {
     async resolve (query) {
       let pair = null
       if (symbols.fiat.indexOf(query.source) !== -1 && pairs[query.source][query.target]) {
-        const tg = typeof(pairs[query.source][query.target]) === 'string'
+        const tg = typeof (pairs[query.source][query.target]) === 'string'
           ? pairs[query.source][query.target]
           : query.target.toUpperCase()
         pair = `${tg}_${query.source.toUpperCase()}`
@@ -44,8 +43,8 @@ module.exports = function (engine) {
       const url = `https://coinmate.io/api/orderBook?currencyPair=${pair}&groupByPriceLimit=False`
       const bres = await engine.fetch({ url })
       const data = bres.data.data
-      //console.log(bres)
-      let book = query.dir === 'buy' ? data.asks : data.bids
+      // console.log(bres)
+      const book = query.dir === 'buy' ? data.asks : data.bids
       let rest = Number(query.value)
       let cost = 0
       for (const i of book) {
@@ -62,7 +61,7 @@ module.exports = function (engine) {
       }
       if (rest > 0) {
         return {
-          error: `nedostatek likvidity (dostupná: ${Math.round((Number(query.value) - rest) * 100)/100} ${query.target.toUpperCase()})`
+          error: `nedostatek likvidity (dostupná: ${Math.round((Number(query.value) - rest) * 100) / 100} ${query.target.toUpperCase()})`
         }
       }
       // fee

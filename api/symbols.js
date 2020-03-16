@@ -1,14 +1,14 @@
 module.exports = {
   dai: {
-    ref: [ 'coinbase-pro', 'dai', 'usdc' ]
+    ref: ['coinbase-pro', 'dai', 'usdc']
   },
   zec: {
-    ref: [ 'coinbase-pro', 'zec', 'usdc' ]
+    ref: ['coinbase-pro', 'zec', 'usdc']
   },
   usdc: {
-    ref: [ 'kraken', 'usdc', 'usd' ]
+    ref: ['kraken', 'usdc', 'usd']
   },
   bat: {
-    ref: [ 'coinbase-pro', 'bat', 'usdc' ]
+    ref: ['coinbase-pro', 'bat', 'usdc']
   }
 }

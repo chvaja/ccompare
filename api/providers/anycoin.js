@@ -1,5 +1,4 @@
 module.exports = function (engine) {
-
   const limits = {
     min: 1,
     max: 250000
@@ -11,7 +10,7 @@ module.exports = function (engine) {
       const rr = await engine.fetch({ url: 'https://www.anycoin.cz/api/rates' })
       const rates = rr.data.data
 
-      let code = [ query.target, query.source ]
+      let code = [query.target, query.source]
       if (query.dir === 'sell') {
         code = code.reverse()
       }
@@ -29,6 +28,4 @@ module.exports = function (engine) {
       return { price }
     }
   }
-
 }
-

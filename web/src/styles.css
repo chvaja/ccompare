@@ -1,0 +1,41 @@
+.cc-table tr.is-inactive td {
+  color: silver;
+}
+.cc-table tr.is-oracle td {
+  background-color: #f2f2f2;
+}
+.cc-table tr:not(.is-oracle):not(.is-inactive):hover td {
+  /*background-color: #fffed4;*/
+  background-color: #e8ffee;
+}
+.loading {
+  display: inline-block;
+  width: 64px;
+  height: 64px;
+  background: url(/img/loading.gif) 64px 64px;
+}
+.seller-ico {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background-size: 20px 20px;
+  vertical-align: -0.25em;
+  margin-right: 0.5em;
+}
+.seller-coinmate { background-image: url(/img/sellers/coinmate.ico); }
+.seller-anycoin { background-image: url(/img/sellers/anycoin.png); }
+.seller-freecoin { background-image: url(/img/sellers/freecoin.ico); }
+.seller-bitstock_svcbbank, .seller-bitstock_wire, .seller-bitstock_btm, .seller-bitstock_cash, .seller-bitstock { background-image: url(/img/sellers/bitstock.ico); }
+.seller-coinexchange { background-image: url(/img/sellers/coinexchange.png); }
+.seller-coinbank { background-image: url(/img/sellers/coinbank.png); }
+.seller-ccshop { background-image: url(/img/sellers/ccshop.ico); }
+.seller-bitbeli { background-image: url(/img/sellers/bitbeli.png); }
+.seller-moonpay_card, .seller-moonpay_wire, .seller-moonpay { background-image: url(/img/sellers/moonpay.png); }
+.seller-simplecoin { background-image: url(/img/sellers/simplecoin.png); }
+.seller-sonatacoin { background-image: url(/img/sellers/sonatacoin.png); }
+
+.gwei-logo { background-image: url(https://gwei.cz/img/logo.png); background-size: 100px 100px; width: 100px; height: 100px; display: inline-block; }
+
+.is-green { color: green; }
+.is-yellow { color: orange; }
+.is-red { color: red; }

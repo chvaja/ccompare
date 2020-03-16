@@ -47,12 +47,12 @@ module.exports = {
 
   bitstock_svcbbank: {
     name: 'Bitstock.com (banking)',
-    url: 'https://www.bitstock.com/',
+    url: 'https://www.bitstock.com/'
   },
 
   bitstock: {
     name: 'Bitstock.com',
-    url: 'https://www.bitstock.com/',
+    url: 'https://www.bitstock.com/'
   },
 
   ccshop: {
@@ -78,5 +78,10 @@ module.exports = {
   moonpay_wire: {
     name: 'MoonPay.io (SEPA)',
     url: 'https://buy.moonpay.io/'
+  },
+
+  sonatacoin: {
+    name: 'SonataCoin.cz',
+    url: 'https://sonatacoin.cz/'
   }
 }

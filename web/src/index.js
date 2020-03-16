@@ -15,10 +15,10 @@ const symbols = {
   zec: { type: 'crypto', name: 'ZEC' },
   xlm: { type: 'crypto', name: 'XLM' },
   dash: { type: 'crypto', name: 'DASH' },
-  bat: { type: 'crypto', name: 'BAT' },
+  bat: { type: 'crypto', name: 'BAT' }
 }
 
-const apiUrl = 'http://localhost:6798'
+const apiUrl = 'https://api.kurzy.gwei.cz'
 
 const state = {
   dir: 'buy',
@@ -51,10 +51,10 @@ function paramCheckbox (key) {
 function getSymbols (type) {
   return Object.keys(symbols).filter(s => symbols[s].type === type).map(symbol => Object.assign(symbols[symbol], { symbol }))
 }
-function relDiff(a, b) {
-  return  100 * ( ( a - b ) / ( (a+b)/2 ) )
+function relDiff (a, b) {
+  return 100 * ((a - b) / ((a + b) / 2))
 }
-function getRoute() {
+function getRoute () {
   return `/${state.dir === 'sell' ? 'prodej' : 'nakup'}/${state.source}/${state.target}/${state.value}`
 }
 function offsetClass (dir, offset) {
@@ -100,7 +100,7 @@ function doSearch () {
 const Table = {
   view (vnode) {
     if (loading) {
-      return m('div', { style: 'text-align: center; margin-top: 5em;' }, m('.loading')) 
+      return m('div', { style: 'text-align: center; margin-top: 5em; margin-bottom: 10em;' }, m('.loading'))
     }
     if (!result) {
       return m('div', '')
@@ -111,15 +111,15 @@ const Table = {
     } else {
       best = result.items.filter(i => i.price && !i.oracle)[0]
     }
-    return m('table.table.is-fullwidth.cc-table', { style: 'margin-bottom: 5em; margin-top: 0.5em;' }, [
+    return m('table.table.is-fullwidth.cc-table', { style: 'margin-bottom: 1em; margin-top: 0.5em;' }, [
       m('thead', [
         m('th', ''),
         m('th', { align: 'center' }, 'Kurz'),
         m('th', { align: 'center' }, 'Rozdíl'),
-        m('th', { align: 'right' }, 'Cena'),
+        m('th', { align: 'right' }, 'Cena')
       ]),
       m('tbody', result.items.map(r => {
-        let offset = best ? relDiff(Number(r.price), Number(best.price)) : null
+        const offset = best ? relDiff(Number(r.price), Number(best.price)) : null
         const seller = sellers[r.seller] || { name: r.seller }
         const cl = offsetClass(result.dir, offset)
         const sellerTd = [
@@ -134,18 +134,98 @@ const Table = {
           ])
         }
         const showPrice = () => {
-          const primary = `${r.orig ? '~ ' : ''}${numeral(Math.round(r.price*100)/100).format('0,0.00')} ${symbols[result.source].name}`
-          const secondary = r.orig ? `<small>${numeral(Math.round(r.orig*100)/100).format('0,0.00')} ${(r.origSymbol || '').toUpperCase()}</small>` : ''
-          return m.trust([ !r.oracle ? `<b>${primary}</b>` : primary, secondary ].join('<br>'))
+          const primary = `${r.orig ? '~ ' : ''}${numeral(Math.round(r.price * 100) / 100).format('0,0.00')} ${symbols[result.source].name}`
+          const secondary = r.orig ? `<small>${numeral(Math.round(r.orig * 100) / 100).format('0,0.00')} ${(r.origSymbol || '').toUpperCase()}</small>` : ''
+          return m.trust([!r.oracle ? `<b>${primary}</b>` : primary, secondary].join('<br>'))
         }
 
         return m('tr', { class: `${r.oracle ? 'is-oracle' : ''}` }, [
           m('td', sellerTd),
           m('td', { align: 'center', style: 'font-size: 0.8em; line-height: 1.2em;' }, r.price ? m.trust(numeral(Number(r.price) / Number(result.value)).format('0,0.00') + ` ${symbols[result.source].name}` + `<br>$${numeral(Number(r.alt) / Number(result.value)).format('0,0.00')}`) : ''),
-          m('td', { align: 'center', class: cl }, r.price ? (offset ? `${offset > 0 ? '+' : ''}${Math.round(offset*100)/100}%` : (r.oracle ? '0%' : 'nejlepší nabídka')) : ''),
-          m('td', { align: 'right', style: `${r.orig ? 'line-height: 1.1em; padding-top: 0.4em; padding-bottom: 0.3em;' : ''}` }, r.price ? showPrice() : ''),
+          m('td', { align: 'center', class: cl }, r.price ? (offset ? `${offset > 0 ? '+' : ''}${Math.round(offset * 100) / 100}%` : (r.oracle ? '0%' : 'nejlepší nabídka')) : ''),
+          m('td', { align: 'right', style: `${r.orig ? 'line-height: 1.1em; padding-top: 0.4em; padding-bottom: 0.3em;' : ''}` }, r.price ? showPrice() : '')
         ])
       }))
+    ])
+  }
+}
+
+const Form = {
+  view () {
+    return [
+      m('.columns.is-centered', { style: 'margin-top: 0;' }, [
+        m('.column.is-two-thirds', [
+          m('form', { onsubmit: doSearch }, [
+            m('.level', { style: '' }, [
+              m('.level-item', [
+                m('.select', [
+                  m('select', { onchange: stateSetter('dir'), value: state.dir }, [
+                    m('option', { value: 'buy' }, 'Koupit'),
+                    m('option', { value: 'sell' }, 'Prodat')
+                  ])
+                ])
+              ]),
+              m('.level-item', [
+                m('input.input', { type: 'text', placeholder: 'Částka', oninput: stateSetter('value'), value: state.value })
+              ]),
+              m('.level-item', [
+                m('.select', [
+                  m('select', { onchange: stateSetter('target'), value: state.target }, getSymbols('crypto').map(s => {
+                    return m('option', { value: s.symbol }, s.name)
+                  }))
+                ])
+              ]),
+              m('.level-item', 'za'),
+              m('.level-item', [
+                m('.select', [
+                  m('select', { onchange: stateSetter('source'), value: state.source }, getSymbols('fiat').map(s => {
+                    return m('option', { value: s.symbol }, s.name)
+                  }))
+                ])
+              ]),
+              m('.level-item', [
+                m('button.button.is-primary', { onclick: doSearch }, 'Hledat')
+              ])
+            ])
+          ])
+        ])
+      ]),
+      !params.advanced ? '' : m('.columns.is-centered', [
+        m('.column.is-two-thirds', [
+          m('.level', [
+            m('.level-left', [
+              m('.level-item', [
+                m('label.checkbox', [
+                  m('input', { type: 'checkbox', onchange: paramCheckbox('oracleDiff'), checked: params.oracleDiff }),
+                  m('span', { style: 'margin-left: 0.5em;' }, 'Rozdíl ceny vůči referenčnímu kurzu')
+                ])
+              ]),
+              m('.level-item', [
+                m('label.checkbox', [
+                  m('input', { type: 'checkbox', onchange: paramCheckbox('debug'), checked: params.debug }),
+                  m('span', { style: 'margin-left: 0.5em;' }, 'Debug')
+                ])
+              ])
+            ])
+          ])
+        ])
+      ])
+    ]
+  }
+}
+
+const Debug = {
+  view () {
+    return !params.debug ? '' : m('div', [
+      m('div', { style: 'margin-top: 5em;' }, [
+        m('.title.is-5', 'Debug (input)'),
+        m('pre.code', '// state\n' + JSON.stringify(state, null, 2)),
+        m('pre.code', '// params\n' + JSON.stringify(params, null, 2))
+      ]),
+      m('div', { style: 'margin-top: 5em;' }, [
+        m('.title.is-5', 'Debug (result)'),
+        m('pre.code', JSON.stringify(result, null, 2))
+      ])
     ])
   }
 }
@@ -175,84 +255,23 @@ const Page = {
         m('.columns.is-centered', [
           m('.column.is-three-quarters', [
             m('.figure', { style: 'text-align: center; margin-bottom: 1em;' }, [
-              //m('.title.is-1', m.trust('Czech Crypto Index')),
-              m('.title.is-2', 'Nejvýhodnější kurzy kryptoměn v CZK/EUR'),
-            ]),
-          ])
-        ]),
-        m('.columns.is-centered', { style: 'margin-top: 0;' }, [
-          m('.column.is-two-thirds', [
-            m('form', { onsubmit: doSearch }, [
-              m('.level', { style: '' }, [
-                m('.level-item', [
-                  m('.select', [
-                    m('select', { onchange: stateSetter('dir'), value: state.dir }, [
-                      m('option', { value: 'buy' }, 'Koupit'),
-                      m('option', { value: 'sell' }, 'Prodat')
-                    ])
-                  ])
-                ]),
-                m('.level-item', [
-                  m('input.input', { type: 'text', placeholder: 'Částka', oninput: stateSetter('value'), value: state.value }),
-                ]),
-                m('.level-item', [
-                  m('.select', [
-                    m('select', { onchange: stateSetter('target'), value: state.target }, getSymbols('crypto').map(s => {
-                      return m('option', { value: s.symbol }, s.name)
-                    }))
-                  ])
-                ]),
-                m('.level-item', 'za'),
-                m('.level-item', [
-                  m('.select', [
-                    m('select', { onchange: stateSetter('source'), value: state.source }, getSymbols('fiat').map(s => {
-                      return m('option', { value: s.symbol }, s.name)
-                    }))
-                  ])
-                ]),
-                m('.level-item', [
-                  m('button.button.is-primary', { onclick: doSearch }, 'Hledat')
-                ])
-              ]),
-            ]),
-          ]),
-        ]),
-        !params.advanced ? '' : m('.columns.is-centered', [
-          m('.column.is-two-thirds', [
-            m('.level', [
-              m('.level-left', [
-                m('.level-item', [
-                  m('label.checkbox', [
-                    m('input', { type: 'checkbox', onchange: paramCheckbox('oracleDiff'), checked: params.oracleDiff }),
-                    m('span', { style: 'margin-left: 0.5em;' }, 'Rozdíl ceny vůči referenčnímu kurzu')
-                  ])
-                ]),
-                m('.level-item', [
-                  m('label.checkbox', [
-                    m('input', { type: 'checkbox', onchange: paramCheckbox('debug'), checked: params.debug }),
-                    m('span', { style: 'margin-left: 0.5em;' }, 'Debug')
-                  ])
-                ]),
-              ])
+              // m('.title.is-1', m.trust('Czech Crypto Index')),
+              m('.title.is-2', 'Nejvýhodnější kurzy kryptoměn v CZK/EUR')
             ])
           ])
         ]),
+        m(Form),
         m('.columns.is-centered', [
           m('.column.is-three-quarters', [
             m(Table, params),
-            !params.debug ? '' : m('div', [
-              m('div', { style: 'margin-top: 5em;' }, [
-                m('.title.is-5', 'Debug (input)'),
-                m('pre.code', '// state\n' + JSON.stringify(state, null, 2)),
-                m('pre.code', '// params\n' + JSON.stringify(params, null, 2))
-              ]),
-              m('div', { style: 'margin-top: 5em;' }, [
-                m('.title.is-5', 'Debug (result)'),
-                m('pre.code', JSON.stringify(result, null, 2))
-              ])
-            ])
-          ]),
+            m(Debug)
+          ])
         ]),
+        m('div', { align: 'center', style: 'margin-top: 5em;' }, [
+          m('a', { href: 'https://gwei.cz', target: '_blank' }, m('.gwei-logo')),
+          m('div', m.trust('Vytvořeno <a href="https://gwei.cz">Gwei.cz</a> komunitou&nbsp;&nbsp; ❤️  &nbsp;pro Vás s láskou')),
+          m('div', { style: 'margin-top: 0.5em; font-size: 1.2em;' }, m.trust('<a href="https://discord.gg/FpxwbnM" target="_blank">Připojte se na náš Discord</a>'))
+        ])
       ])
     ])
   }
@@ -260,7 +279,6 @@ const Page = {
 
 const root = document.getElementById('app')
 m.mount(root, Page)
-
 
 m.route(root, '/', {
   '/': Page,

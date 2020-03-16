@@ -1,5 +1,4 @@
 module.exports = function (engine) {
-
   const symbols = [
     'ETH',
     'BTC',

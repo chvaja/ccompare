@@ -1,5 +1,4 @@
 module.exports = function (engine) {
-
   const globalLimits = {
     day: 100000
   }
@@ -19,7 +18,7 @@ module.exports = function (engine) {
         return {}
       }
       const pp = await engine.fetch({
-        url: `https://www.bitbeli.cz/api/client/exchange/currency-crypto-rate-czk/buy`,
+        url: 'https://www.bitbeli.cz/api/client/exchange/currency-crypto-rate-czk/buy',
         headers: {
           authorization: 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiI3MzU1YzMwMy03NGZhLTRlNmUtYmM0OS0yMDlmNjVlMWUxMDkiLCJzdWIiOiJBbm9ueW1vdXNfQml0YmVsaV9kODUxY2NlMS0wNTJkLTQ2ZjItOWFiMS0yOTA0OTJiMGMwOTR6RWlDNkNFNjgzUW50MDJTd2VqMEZ6ZTJrd1ZlSEZibSIsImlhdCI6MTU4NDI1NzM3OCwiZXhwIjoxNTg0MjY0NTc4fQ.mgnr9zrKrrrivD4eMT5IplyqnzywAmZhrbVHMR05GTR4GhnS7d9eadGYl2SX0Zayam4XuN6MUgmNVcDveTNyLA'
         }
@@ -40,5 +39,4 @@ module.exports = function (engine) {
       return { price: String(price) }
     }
   }
-
 }

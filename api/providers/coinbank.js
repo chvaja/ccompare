@@ -1,6 +1,5 @@
 
 module.exports = function (engine) {
-
   const subs = [
     'coinbank',
     'coinexchange'
@@ -17,7 +16,6 @@ module.exports = function (engine) {
   }
 
   return {
-    name: 'CoinBank / CoinExchange',
 
     async resolve (query) {
       const pg = await engine.fetch({ url: 'https://coinexchange.cz/' })

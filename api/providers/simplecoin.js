@@ -1,10 +1,9 @@
 module.exports = function (engine) {
-
   const symbols = {
-    'czk': '4',
-    'eur': '2',
-    'btc': '6',
-    'eth': '13'
+    czk: '4',
+    eur: '2',
+    btc: '6',
+    eth: '13'
   }
   const apiUrl = 'https://server.simplecoin.eu/v1/exchange/price'
 

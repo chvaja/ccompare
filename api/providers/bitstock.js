@@ -1,6 +1,5 @@
 
 module.exports = function (engine) {
-
   const limits = {
     cash: {
       min: 1000,
@@ -41,7 +40,7 @@ module.exports = function (engine) {
       const rr = await engine.fetch({ url: `https://cz.bitstock.com/api01/exchange-pairs/${pair}` })
       const rates = rr.data.data.attributes
       for (const r of Object.keys(rates)) {
-        const channel = r.replace(/^channel/,'').toLowerCase()
+        const channel = r.replace(/^channel/, '').toLowerCase()
         const price = Number(rates[r][dir]) * Number(query.value)
         const obj = { seller: `bitstock_${channel}`, price: String(price) }
         if (limits[channel]) {
